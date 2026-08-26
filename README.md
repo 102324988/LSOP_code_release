@@ -21,7 +21,7 @@ reconstruction from images.
 sop-release/
 ├── README.md
 ├── LICENSE
-├── code/                  # 151 Python scripts (training / inference / evaluation / data pipeline)
+├── code/                  # 157 Python scripts (training / inference / evaluation / data pipeline)
 │   ├── d8_train_full.py   #   D8  training (global-condition decoder)
 │   ├── m1_train_vae.py    #   M1  profile VAE
 │   ├── m2_train.py        #   M2  latent diffusion
@@ -124,6 +124,38 @@ lr 3e-4, batch 16, cosine to 5%, grad-clip 1.0; M1: 60 epochs, β=1e-4, 5-epoch 
 | M3b v2 γ=2 | 0.0348 | 0.0356 | FWHM 1.00 |
 | M1 (VAE recon.) | 0.0419 | — | latent faithful |
 | M3a best-of-8 (CFG 8) | 0.0337 | — | matches D8 |
+
+## Additional experiments (Pattern Recognition review revision)
+
+Scripts added for the review revision — center robustness, inference efficiency, and an
+external ray-wise baseline with view scaling, all on the same 819/90/90 split and the same
+soft-depth protocol:
+
+| script | experiment | paper section |
+|---|---|---|
+| `center_robust.py` | D8 robustness to object-center mis-estimation, $\Delta x = 0/2/4/9$ px ($\approx 0$–$18.7\%$ of object radius) | center-robustness table |
+| `runtime_prof.py` | single-object latency + peak GPU memory (NVIDIA L20, fp32) | inference-efficiency table |
+| `exts_baseline.py` | trains D8 with $K{=}1/2$ views and a RayDF-style ray-wise distance field with $K{=}8/1$ views, same encoder / fusion / optimizer / metric | "External baseline and view scaling" |
+| `run_exts.sh` | serial driver for the four `exts_baseline.py` runs | — |
+
+Key numbers:
+
+| model | views $K$ | val dmed_s | test dmed_s |
+|---|---|---|---|
+| D8 (profile) | 8 | 0.0338 | 0.0384 |
+| D8 (profile) | 2 | 0.0430 | 0.0419 |
+| D8 (profile) | 1 | 0.0380 | 0.0442 |
+| Ray-wise (RayDF-style) | 8 | 0.0396 | 0.0369 |
+| Ray-wise (RayDF-style) | 1 | 0.0455 | 0.0422 |
+
+Center robustness: $\mathrm{dmed_s}$ stays within $0.0338\to0.0373$ up to $\Delta x = 9$ px
+($18.7\%$ radius). Inference: D8 $2.2$ ms / $165$ MB; M3b $4.8$ ms / $474$ MB; M1 (VAE recon)
+$1.5$ ms; M2 (50-step DDIM sample) $19.5$ ms.
+
+> **Checkpoints for the view-scaling / ray-wise models** (`d8_mean_pool_v1/model.pt`,
+> `d8_mean_pool_v2/model.pt`, `rw_dist_v8/model.pt`, `rw_dist_v1/model.pt`) live on the compute
+> server used for the revision and will be uploaded to GitHub Releases when that server is next
+> powered on. The code and the numbers above are final.
 
 ## License
 
