@@ -152,10 +152,10 @@ Center robustness: $\mathrm{dmed_s}$ stays within $0.0338\to0.0373$ up to $\Delt
 ($18.7\%$ radius). Inference: D8 $2.2$ ms / $165$ MB; M3b $4.8$ ms / $474$ MB; M1 (VAE recon)
 $1.5$ ms; M2 (50-step DDIM sample) $19.5$ ms.
 
-> **Checkpoints for the view-scaling / ray-wise models** (`d8_mean_pool_v1/model.pt`,
-> `d8_mean_pool_v2/model.pt`, `rw_dist_v8/model.pt`, `rw_dist_v1/model.pt`) live on the compute
-> server used for the revision and will be uploaded to GitHub Releases when that server is next
-> powered on. The code and the numbers above are final.
+> **Checkpoints for the view-scaling / ray-wise models** (`d8_mean_pool_v1_model.pt`,
+> `d8_mean_pool_v2_model.pt`, `rw_dist_v8_model.pt`, `rw_dist_v1_model.pt`) are available in
+> the [v1.1.0 release](https://github.com/102324988/LSOP_code_release/releases/tag/v1.1.0)
+> (one asset per model; the code and the numbers above are final).
 
 ## License
 
